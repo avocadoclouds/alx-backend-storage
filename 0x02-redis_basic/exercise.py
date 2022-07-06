@@ -31,7 +31,7 @@ def count_calls(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(self, *args, **kwds):
         """wrapper of decorator"""
-       # key = method.__qualname__
+        # key = method.__qualname__
         self._redis.incr(key)
         return method(self, *args, **kwds)
     return wrapper
@@ -50,6 +50,24 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(output_list, output)
         return output
     return wrapper
+
+
+def replay(method: Callable) -> None:
+    """
+    prints the call history of the method passed
+    as parameter
+    """
+    r_instance = method.__self__._redis
+    key = method.__qualname__
+    n_calls = r_instance.get(key).decode("utf-8")
+    print(f'{key} was called {n_calls} times:')
+    fn_inputs = r_instance.lrange(f'{key}:inputs', 0, -1)
+    fn_outputs = r_instance.lrange(f'{key}:outputs', 0, -1)
+    fn_inout = list(zip(fn_inputs, fn_outputs))
+    for input, output in fn_inout:
+        input = input.decode('utf-8')
+        output = output.decode('utf-8')
+        print(f"{key}(*{input}) -> {output}")
 
 
 class Cache:
