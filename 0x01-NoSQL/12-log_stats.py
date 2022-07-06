@@ -10,7 +10,7 @@ first line: x logs where x is the number of documents in this collection
 second line: Methods:
 5 lines with the number of documents with the
 method = ["GET", "POST", "PUT", "PATCH", "DELETE"] in this order
-(see example below - warning: it’s a tabulation before each line)
+(see example below - warning: it is a tabulation before each line)
 one line with the number of documents with:
 method=GET
 path=/status
@@ -19,13 +19,12 @@ path=/status
 from pymongo import MongoClient
 
 
-# Fist line
-
-
 def log_stats(nginx_collection):
     """
     Provides some stats about Nginx logs stored in MongoDB
     """
+
+    # Fist line
     totalLogs = nginx_collection.count_documents({})
     print("{} logs".format(totalLogs))
 
@@ -36,7 +35,7 @@ def log_stats(nginx_collection):
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     for method in methods:
         count = nginx_collection.count_documents({"method": method})
-        print('method {}: {}'.format(method, count))
+        print('\tmethod {}: {}'.format(method, count))
 
     # The final line (status check)
     status = nginx_collection.count_documents(
