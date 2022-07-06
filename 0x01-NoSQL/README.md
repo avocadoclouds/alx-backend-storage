@@ -2,6 +2,10 @@
 
 ---
 
+#### Manual for Mongodb
+
+https://www.mongodb.com/docs/manual/tutorial/project-fields-from-query-results/
+
 #### Methods For Mongodb
 
 https://www.mongodb.com/docs/manual/reference/method/
