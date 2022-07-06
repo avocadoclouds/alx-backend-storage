@@ -3,7 +3,7 @@
 
 import redis
 from uuid import uuid4
-from typing import Union
+from typing import Union, Callable, Optional
 
 """
 Create a Cache class. In the __init__ method,
@@ -38,3 +38,23 @@ class Cache:
         self._redis.mset({key: data})
 
         return key
+
+    def get(self, key: str,
+            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+        """
+        method that take a key string argument
+        and an optional Callable argument named fn.
+        This callable will be used to convert the data
+        back to the desired format.
+        """
+
+        data = self._redis.get(key)
+        return fn(data) if fn else data
+
+    def get_str(self, data: str) -> str:
+        """ get a string """
+        return self._redis.get(data).decode('utf-8')
+
+    def get_int(self, data: str) -> int:
+        """ get an int """
+        return int(self._redis.get(data))
