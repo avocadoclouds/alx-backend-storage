@@ -4,6 +4,7 @@
 import redis
 from uuid import uuid4
 from typing import Union, Callable, Optional
+from functools import wraps
 
 """
 Create a Cache class. In the __init__ method,
@@ -17,6 +18,22 @@ Type-annotate store correctly.
 Remember that data can be a str, bytes, int or float.
 """
 
+unionTypes = Union[str, bytes, int, float]
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    decorator Counts how many times methods
+    of Cache class are called
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """wrapper of decorator"""
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, **kwds)
+    return wrapper
+
 
 class Cache:
     """classfor operating caching systems"""
@@ -26,7 +43,8 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    def store(self, data: Union[str, bytes, int, float]) -> str:
+    @count_calls
+    def store(self, data: unionTypes) -> str:
         """
         method that takes a data argument and returns a string.
         The method should generate a random key (e.g. using uuid),
@@ -40,7 +58,7 @@ class Cache:
         return key
 
     def get(self, key: str,
-            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+            fn: Optional[Callable] = None) -> unionTypes:
         """
         method that take a key string argument
         and an optional Callable argument named fn.
@@ -53,8 +71,8 @@ class Cache:
 
     def get_str(self, data: str) -> str:
         """ get a string """
-        return self._redis.get(data).decode('utf-8')
+        return self.get(key, str)
 
     def get_int(self, data: str) -> int:
         """ get an int """
-        return int(self._redis.get(data))
+        return self.get(key, int)
