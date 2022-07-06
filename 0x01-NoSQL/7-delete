@@ -1,4 +1,6 @@
 // a script that deletes all documents with name="Holberton school" in the collection school
 // The database name will be passed as option of mongo command
 
+// db.school.remove() -> only removes one document
+
 db.school.deleteMany({'name': 'Holberton school'})
