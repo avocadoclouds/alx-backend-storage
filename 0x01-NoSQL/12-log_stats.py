@@ -18,30 +18,27 @@ path=/status
 
 from pymongo import MongoClient
 
-# Fist line
-
-
-def log_stats(nginx_collection):
-    totalLogs = nginx_collection.count_documents({})
-    print("{} logs".format(totalLogs))
-
-    # Second line
-    print('Methods:')
-
-    # The 5 lines
-    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-    for method in methods:
-        count = nginx_collection.count_documents({"method": method})
-        print('method {}: {}'.format(method, count))
-
-    # The final line (status check)
-    status = nginx_collection.count_documents(
-        {"method": "GET", "path": "/status"}
-    )
-    print("{} status check".format(status))
-
-
 if __name__ == "__main__":
     client = MongoClient('mongodb://127.0.0.1:27017')
     nginx_collection = client.logs.nginx
-    log_stats(nginx_collection)
+
+# Fist line
+
+
+totalLogs = nginx_collection.count_documents({})
+print("{} logs".format(totalLogs))
+
+# Second line
+print('Methods:')
+
+# The 5 lines
+methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+for method in methods:
+    count = nginx_collection.count_documents({"method": method})
+    print('    method {}: {}'.format(method, count))
+
+# The final line (status check)
+status = nginx_collection.count_documents(
+    {"method": "GET", "path": "/status"}
+)
+print("{} status check".format(status))
