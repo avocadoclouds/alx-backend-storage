@@ -32,7 +32,7 @@ def log_stats(nginx_collection):
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     for method in methods:
         count = nginx_collection.count_documents({"method": method})
-        print('{}: {}'.format(method, count))
+        print('method {}: {}'.format(method, count))
 
     # The final line (status check)
     status = nginx_collection.count_documents(
